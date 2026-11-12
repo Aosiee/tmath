@@ -7,4 +7,6 @@
 #include "Math/Constants.h"
 #include "Math/Scalar.h"
 #include "Math/Angle.h"
+#include "Math/Geometry.h"
+#include "Math/Intersect.h"
 #include "Math/RandomStream.h"
