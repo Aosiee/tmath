@@ -11,4 +11,7 @@
 #include "Math/Intersect.h"
 #include "Math/Transform.h"
 #include "Math/Projection.h"
+#include "Math/Colour.h"
+#include "Math/Sampling.h"
+#include "Math/SphericalHarmonics.h"
 #include "Math/RandomStream.h"

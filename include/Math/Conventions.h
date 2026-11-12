@@ -19,7 +19,7 @@
 //   fails to compile. Projection.h is the engine's builder.
 // - Colour: stored and computed as linear RGB (Light colour is linear RGB);
 //   sRGB only at the edges, where colour enters or leaves the engine. The
-//   conversions arrive with Colour.h.
+//   conversions are Colour.h's.
 //
 // Determinism: the arithmetic-only functions (all of Scalar.h and
 // Angle.h - std::fmod is exact) are bit-stable across platforms and
