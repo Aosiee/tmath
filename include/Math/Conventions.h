@@ -10,11 +10,13 @@
 // - Angles: radians in the math API. Degrees only in serialized and
 //   user-facing fields (Transform::Rotation's Euler degrees, the camera's
 //   VerticalFovDegrees, the light cone angles); the conversions are Angle.h's.
-// - Clip-space depth: the TARGET is Vulkan's [0, 1] (the switch makes
-//   GLM_FORCE_DEPTH_ZERO_TO_ONE a public define of the glm plugin and
-//   switches the two shader depth linearizations with it). TODAY glm's
-//   default [-1, 1] applies; kClipDepthZeroToOne reports which one this
-//   build compiles, so nothing has to guess.
+// - Clip-space depth: Vulkan's [0, 1]. The glm plugin
+//   defines GLM_FORCE_DEPTH_ZERO_TO_ONE publicly, so every glm projection
+//   in the tree emits z_ndc in [0, 1] (near -> 0, far -> 1) and the depth
+//   buffer stores z_ndc directly; a depth reconstruction inverts that form
+//   (Math::LinearizeDepth, the shaders' nf / (f - d (f - n))). Asserted
+//   below - a translation unit that reaches this header without the define
+//   fails to compile. Projection.h is the engine's builder.
 // - Colour: stored and computed as linear RGB (Light colour is linear RGB);
 //   sRGB only at the edges, where colour enters or leaves the engine. The
 //   conversions arrive with Colour.h.
@@ -40,8 +42,13 @@ namespace TinyEngine::Math {
 	static_assert((GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_RH_BIT) != 0,
 		"the engine is right-handed: glm must build right-handed projections");
 
-	// True once GLM_FORCE_DEPTH_ZERO_TO_ONE is defined; false today.
+#if !defined(GLM_FORCE_DEPTH_ZERO_TO_ONE)
+#	error "the clip depth is [0, 1] - GLM_FORCE_DEPTH_ZERO_TO_ONE must be defined (the glm plugin's public define; this TU does not see it)"
+#endif
+
+	// The clip depth range glm builds: [0, 1] (asserted).
 	inline constexpr bool kClipDepthZeroToOne = (GLM_CONFIG_CLIP_CONTROL & GLM_CLIP_CONTROL_ZO_BIT) != 0;
+	static_assert(kClipDepthZeroToOne, "glm must build [0, 1] clip depth (GLM_FORCE_DEPTH_ZERO_TO_ONE)");
 
 	// The world basis.
 	inline constexpr glm::vec3 kRight(1.0f, 0.0f, 0.0f);

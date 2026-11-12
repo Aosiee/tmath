@@ -222,11 +222,12 @@ namespace TinyEngine::Math {
 		// world -> clip matrix; a projection alone gives the view-space
 		// frustum). The matrix MUST use the [0, 1] clip-depth convention
 		// (Conventions.h: Vulkan's - glm's *_ZO projections): Near is the
-		// plane z_clip >= 0. The engine's projections still build glm's
-		// default [-1, 1] depth until they switch to [0, 1]; given one of
-		// those, the extracted Near plane sits where z_ndc = 0 (about twice
-		// the camera's near distance), not at the configured near. Nothing in
-		// the renderer uses this yet (frustum culling is a later renderer item).
+		// plane z_clip >= 0. Every engine projection is [0, 1] (Projection.h,
+		// the glm plugin's GLM_FORCE_DEPTH_ZERO_TO_ONE); given an explicit
+		// [-1, 1] matrix (glm's *_NO forms), the extracted Near plane sits
+		// where z_ndc = 0 (about twice the camera's near distance), not at
+		// the configured near. Nothing in the renderer uses this yet (frustum
+		// culling is a later renderer item).
 		//
 		// Left/Right/Bottom/Top are clip-space -x/+x/-y/+y. The planes are
 		// normalised; a degenerate matrix gives degenerate planes

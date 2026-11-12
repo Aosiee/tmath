@@ -9,4 +9,6 @@
 #include "Math/Angle.h"
 #include "Math/Geometry.h"
 #include "Math/Intersect.h"
+#include "Math/Transform.h"
+#include "Math/Projection.h"
 #include "Math/RandomStream.h"

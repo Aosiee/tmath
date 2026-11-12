@@ -29,13 +29,15 @@ TEST_CASE("math.conventions: right-handed, Y up, cameras look down -Z")
 
 TEST_CASE("math.conventions: the clip depth range glm builds is the one kClipDepthZeroToOne reports")
 {
-	// [-1, 1] today, [0, 1] once GLM_FORCE_DEPTH_ZERO_TO_ONE is defined -
-	// this case holds across the switch.
+	// [0, 1] since GLM_FORCE_DEPTH_ZERO_TO_ONE became the glm plugin's
+	// public define (before the switch this case read [-1, 1]: the plain
+	// glm::perspective is the default every caller gets).
 	const float n = 0.1f, f = 100.0f;
 	const glm::mat4 projection = glm::perspective(DegreesToRadians(60.0f), 16.0f / 9.0f, n, f);
 	const glm::vec4 nearClip = projection * glm::vec4(0.0f, 0.0f, -n, 1.0f);
 	const glm::vec4 farClip = projection * glm::vec4(0.0f, 0.0f, -f, 1.0f);
-	CHECK(nearClip.z / nearClip.w == doctest::Approx(kClipDepthZeroToOne ? 0.0f : -1.0f));
+	CHECK(kClipDepthZeroToOne);
+	CHECK(nearClip.z / nearClip.w == doctest::Approx(0.0f));
 	CHECK(farClip.z / farClip.w == doctest::Approx(1.0f));
 }
 

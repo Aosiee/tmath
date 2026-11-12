@@ -4,8 +4,8 @@
 // and edge cases: Plane construction and normalisation (incl. the
 // degenerate forms), the AABB's empty state, Expand, Arvo's transform
 // against the brute-force 8-corner transform, Sphere, and the Frustum
-// extracted from [0, 1]-depth projections (glm's *_ZO, built here - the
-// engine's own projections are still [-1, 1]).
+// extracted from [0, 1]-depth projections (glm's *_ZO, built explicitly -
+// the engine's own projections are [0, 1] too).
 
 #include "Math/Angle.h"
 #include "Math/Geometry.h"
@@ -299,9 +299,8 @@ TEST_CASE("math.geometry: Frustum - a [-1, 1]-depth matrix puts Near where z_ndc
 {
 	// Why FromViewProjection requires [0, 1] depth (Geometry.h): glm's
 	// default [-1, 1] form extracts a Near plane at the depth
-	// 2nf / (f + n), about twice the configured near - the same depth
-	// Vulkan clips such a projection at today. The engine's projections
-	// are to switch to [0, 1].
+	// 2nf / (f + n), about twice the configured near - the depth Vulkan
+	// clipped the engine's projections at before they switched to [0, 1].
 	const float n = 0.5f, f = 50.0f;
 	const Frustum fr = Frustum::FromViewProjection(glm::perspectiveRH_NO(DegreesToRadians(60.0f), 1.0f, n, f));
 	CHECK(fr.Get(FrustumPlane::Near).Distance == doctest::Approx(2.0f * n * f / (f + n)));
