@@ -1,11 +1,14 @@
 -- Math: the engine's own math library. Engine layer, its
 -- only dependency is glm, so every engine-layer plugin (assetio, gizmo,
 -- wisp, debug_draw, the tools) can use it as well as the engine. Namespace
--- TinyEngine::Math; headers resolve as "Math/X.h". No pch and no config
--- defines: the module compiles byte-identically in every flavor.
+-- TinyEngine::Math. No pch and no config defines: the module compiles
+-- byte-identically in every flavor.
 --
--- First resident: Math::RandomStream (a seeded, copyable xoshiro256**
--- stream with portable distributions - no process-global state).
+-- The layout is assetio's: the public headers
+-- in include/Math/ (consumers include "Math/X.h"; "Math/Math.h" is the
+-- umbrella), the sources in src/, and the tinytest suites in tests/Math/Tests/
+-- behind the header-only `math_tests` module, so the suites are reachable
+-- by tinytest alone and never sit on a consumer's include path.
 
 plugin "math" {
     enabled_by_default = false,
@@ -23,10 +26,19 @@ for _, flag in ipairs(sanitizers.flags) do
 end
 
 module "math" {
-    sources = glob("src/Math/*.cpp"),
-    public_includes = { "src" },
+    sources = glob("src/*.cpp"),
+    public_includes = { "include" },
     deps = { public = { "glm/glm" } },
     flags = flags,
     public_link_flags = sanitizers.link_flags,
+    cpp_std = "c++20",
+}
+
+-- The `math.*` / `math:` doctest suites (header-only; tinytest's main
+-- includes "Math/Tests/<Suite>.h").
+module "math_tests" {
+    sources = {},
+    public_includes = { "tests" },
+    deps = { public = { "math/math" } },
     cpp_std = "c++20",
 }
