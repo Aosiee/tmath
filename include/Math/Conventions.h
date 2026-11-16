@@ -27,7 +27,7 @@
 // function that calls a transcendental (sin, cos, atan2, exp, pow...) follows
 // the platform libm and is only reproducible on one platform + compiler. The
 // math module's own .cpp files compile with -ffp-contract=off
-// (plugin.build.luau); the header-inline functions compile with the
+// (plugin.build.cluau); the header-inline functions compile with the
 // includer's flags (no -march/-mfma anywhere in the tree today, so x86-64
 // has no FMA to contract into). RandomStream.h records its own contract.
 

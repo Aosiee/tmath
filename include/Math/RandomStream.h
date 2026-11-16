@@ -13,7 +13,7 @@
 // +, *, / and sqrt (IEEE-exact), never sin/cos - draw their components in
 // sequenced statements (x, then y, then z; never as constructor arguments,
 // whose evaluation order is unspecified) and compile with
-// -ffp-contract=off (plugin.build.luau: no FMA contraction). The tinytest
+// -ffp-contract=off (plugin.build.cluau: no FMA contraction). The tinytest
 // `math:` cases pin the outputs, the geometry helpers included.
 //
 // The generator is xoshiro256** (Blackman & Vigna), its 256-bit state
