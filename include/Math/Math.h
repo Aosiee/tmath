@@ -10,6 +10,7 @@
 #include "Math/Geometry.h"
 #include "Math/Intersect.h"
 #include "Math/Transform.h"
+#include "Math/WorldTransform.h"
 #include "Math/Projection.h"
 #include "Math/Colour.h"
 #include "Math/Sampling.h"
