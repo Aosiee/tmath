@@ -1,8 +1,10 @@
 # tmath
 
-[![Linux](https://github.com/Aosiee/tmath/actions/workflows/linux.yml/badge.svg)](https://github.com/Aosiee/tmath/actions/workflows/linux.yml)
-[![Windows: not yet](https://img.shields.io/badge/Windows-not%20yet-lightgrey)](#building)
-[![macOS: not yet](https://img.shields.io/badge/macOS-not%20yet-lightgrey)](#building)
+[![Linux](https://github.com/Aosiee/tmath/actions/workflows/linux.yml/badge.svg?branch=dev)](https://github.com/Aosiee/tmath/actions/workflows/linux.yml)
+[![Windows: not supported](https://img.shields.io/badge/Windows-not%20supported-lightgrey)](#building)
+[![macOS: not supported](https://img.shields.io/badge/macOS-not%20supported-lightgrey)](#building)
+
+[![Release](https://img.shields.io/github/v/release/Aosiee/tmath)](https://github.com/Aosiee/tmath/releases/latest)
 
 Tiny Math: the math a real-time 3D program needs on top of
 [glm](https://github.com/g-truc/glm), with its conventions written down and
@@ -67,6 +69,13 @@ instead. A host build adds tmath with `add_subdirectory` and links
 The full suite, side by side and in every configuration, runs through
 [hamr](https://github.com/Aosiee/hamr): `hamr run` (`--tier nightly` adds
 the sanitizers).
+
+## Branches and releases
+
+`main` holds releases only, each one tagged. New work is built on a stream
+branched from `dev`, lands on `dev` once it passes locally, and is checked
+there by CI; when enough has gathered, `dev` becomes the next release. See
+[`CONTRIBUTING.md`](CONTRIBUTING.md).
 
 ## License
 
