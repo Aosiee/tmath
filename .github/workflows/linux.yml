@@ -2,9 +2,8 @@
 # GCC and Clang, Debug and Release, and the address and undefined-behaviour
 # sanitizers.
 #
-# glm is fetched at the commit CMakeLists.txt pins. hamr (the suite's test
-# library) is checked out at its pin: with the HAMR_TOKEN secret while hamr
-# is private, without one once it is public.
+# glm is fetched at the commit CMakeLists.txt pins, and hamr (the suite's
+# test library) is checked out at its pin.
 name: Linux
 
 on:
@@ -44,7 +43,6 @@ jobs:
           repository: Aosiee/hamr
           ref: ${{ steps.pins.outputs.hamr }}
           path: external/hamr
-          token: ${{ secrets.HAMR_TOKEN || github.token }}
 
       # The sanitizers' shadow memory does not fit beside the runner's
       # default address randomisation.

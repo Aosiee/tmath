@@ -26,7 +26,7 @@ set(TMATH_HAMR_DIR "" CACHE PATH "A hamr checkout, for the suite's test library 
 
 # The pinned dependencies: glm, and hamr's C++ test library for the suite.
 set(TMATH_GLM_COMMIT e7970a8b26732f1b0df9690f7180546f8c30e48e)
-set(TMATH_HAMR_COMMIT 58f44868db9a1b0e4ef22c412ebfd11b20b5a223)
+set(TMATH_HAMR_COMMIT a4d43e9ffe9c084955d28aab5d77c71ff2c8f597) # hamr 0.1.0 (v0.1.0)
 
 # Only headers are needed from either, so neither project's own CMake build
 # runs: SOURCE_SUBDIR names a directory without a CMakeLists.txt.
