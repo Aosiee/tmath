@@ -1,4 +1,4 @@
-#include "Math/RandomStream.h"
+#include "tmath/RandomStream.h"
 
 #include <cmath>
 #include <random>
@@ -7,7 +7,7 @@
 	#include <intrin.h>
 #endif
 
-namespace TinyEngine::Math {
+namespace tmath {
 
 	namespace {
 
@@ -185,4 +185,4 @@ namespace TinyEngine::Math {
 		return ((uint64_t)device() << 32) | (uint64_t)device();
 	}
 
-} // namespace TinyEngine::Math
+} // namespace tmath

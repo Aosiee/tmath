@@ -1,0 +1,74 @@
+# tmath
+
+[![Linux](https://github.com/Aosiee/tmath/actions/workflows/linux.yml/badge.svg)](https://github.com/Aosiee/tmath/actions/workflows/linux.yml)
+[![Windows: not yet](https://img.shields.io/badge/Windows-not%20yet-lightgrey)](#building)
+[![macOS: not yet](https://img.shields.io/badge/macOS-not%20yet-lightgrey)](#building)
+
+Tiny Math: the math a real-time 3D program needs on top of
+[glm](https://github.com/g-truc/glm), with its conventions written down and
+checked. glm stays the vocabulary (`glm::vec3`, `glm::mat4`, `glm::quat`);
+tmath adds the rules every use of it follows and the functions built on
+them: geometry and intersection tests, transforms, projections, colour,
+sampling, spherical harmonics and a random stream that gives the same
+numbers everywhere.
+
+tmath was written for [TinyEngine](https://github.com/Aosiee/TinyEngine) and
+knows nothing about it.
+
+## A taste
+
+```cpp
+#include "tmath/tmath.h"
+
+const glm::mat4 proj = tmath::Perspective(tmath::DegreesToRadians(60.0f), 16.0f / 9.0f, 0.1f, 1000.0f);
+const float viewDepth = tmath::LinearizeDepth(storedDepth, 0.1f, 1000.0f);
+
+const tmath::Ray ray{ origin, direction };
+if (const auto t = tmath::RayPlane(ray, point, normal))
+    hit = ray.At(*t);
+
+tmath::RandomStream random(1234);         // the same sequence on every platform
+const glm::vec3 dir = random.UnitVector();
+```
+
+## The conventions
+
+Written down in `include/tmath/Conventions.h` and checked at compile time
+where the compiler can check them:
+
+- **Right-handed**, cameras look down -Z, **+Y up**.
+- **Radians** in the API; degrees only in serialized and user-facing
+  values, converted with `Angle.h`.
+- **Clip depth is [0, 1]** (Vulkan's). `GLM_FORCE_DEPTH_ZERO_TO_ONE` must be
+  defined for every translation unit that uses glm; tmath's CMake target
+  defines it publicly, and `Conventions.h` refuses to compile without it.
+- **Colour is linear RGB**; sRGB is an edge encoding (`Colour.h`).
+- **Determinism:** the arithmetic-only functions are bit-stable across
+  platforms and compilers given no FMA contraction (tmath compiles with
+  `-ffp-contract=off`); functions that call `sin`, `cos`, `pow` and the
+  like follow the platform's libm.
+
+## Building
+
+C++20, glm, and for the suite hamr's C++ test library. Linux is what is
+checked today; nothing in tmath is Linux-specific.
+
+```sh
+cmake -S . -B build -DCMAKE_BUILD_TYPE=Release
+cmake --build build
+build/tmath_tests
+```
+
+glm and hamr are fetched at the commits `CMakeLists.txt` pins;
+`-DTMATH_GLM_DIR=<dir>` and `-DTMATH_HAMR_DIR=<dir>` use local checkouts
+instead. A host build adds tmath with `add_subdirectory` and links
+`tmath::tmath`; a host that already has a `glm::glm` target keeps its own.
+
+The full suite, side by side and in every configuration, runs through
+[hamr](https://github.com/Aosiee/hamr): `hamr run` (`--tier nightly` adds
+the sanitizers).
+
+## License
+
+The tmath License: MIT-style, with one condition: a product that includes
+tmath credits it in its credits or about box. See [LICENSE](LICENSE).

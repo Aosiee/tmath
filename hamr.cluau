@@ -1,0 +1,68 @@
+// tmath's suite for hamr (github.com/Aosiee/hamr): `hamr run` here.
+//
+// Each configuration builds in its own build-hamr-<name> directory and runs
+// the cases side by side. The fast tier is GCC release and debug and a Clang
+// release; the nightly tier adds the address and undefined-behaviour
+// sanitizers.
+//
+//     hamr run                                  the fast tier
+//     hamr run --tier nightly                   every configuration
+//     hamr run --set glmDir=<dir> --set hamrDir=<dir>   local checkouts instead of fetching
+
+const hamr = require("@hamr")
+type Context = hamr.Context
+
+const suite = hamr.suite("tmath", { budgets = { fast = 120, nightly = 400 } })
+const gcc = suite:var("gcc", "g++")
+const clang = suite:var("clang", "clang++")
+const glmDir = suite:var("glmDir", "")
+const hamrDir = suite:var("hamrDir", "")
+
+type Config = { name: string, cxx: string, type: string, flags: { string }, tier: string, sanitizer: string? }
+
+const configs: { Config } = {
+	{ name = "gcc-release", cxx = gcc, type = "Release", flags = {}, tier = "fast" },
+	{ name = "gcc-debug", cxx = gcc, type = "Debug", flags = {}, tier = "fast" },
+	{ name = "clang-release", cxx = clang, type = "Release", flags = {}, tier = "fast" },
+	{ name = "asan", cxx = gcc, type = "RelWithDebInfo", flags = { "-DTMATH_SANITIZE=address" }, tier = "nightly", sanitizer = "address" },
+	{ name = "ubsan", cxx = gcc, type = "RelWithDebInfo", flags = { "-DTMATH_SANITIZE=undefined" }, tier = "nightly", sanitizer = "undefined" },
+}
+
+const kPaths = { "include/**", "src/**", "tests/**", "CMakeLists.txt" }
+
+for (_, c in configs) {
+	const dir = `build-hamr-{c.name}`
+	suite:step(`build:{c.name}`, {
+		tier = c.tier,
+		doc = `Configures and builds tmath and its suite ({c.cxx}, {c.type}).`,
+		resources = { exclusive = true },
+		timeout = 900,
+		budget = if (c.sanitizer != nil) 90 else 45,
+		paths = kPaths,
+		run = function(ctx: Context) {
+			const configure = { "cmake", "-S", ".", "-B", dir, "-G", "Ninja", `-DCMAKE_BUILD_TYPE={c.type}`, `-DCMAKE_CXX_COMPILER={c.cxx}` }
+			if (glmDir != "") {
+				table.insert(configure, `-DTMATH_GLM_DIR={glmDir}`)
+			}
+			if (hamrDir != "") {
+				table.insert(configure, `-DTMATH_HAMR_DIR={hamrDir}`)
+			}
+			for (_, flag in c.flags) {
+				table.insert(configure, flag)
+			}
+			ctx:run(configure)
+			ctx:run({ "cmake", "--build", dir, "-j", tostring(host.cores()) })
+		},
+	})
+	hamr.tests(suite, `tests:{c.name}`, {
+		doc = "The suite, each case in its own worker process.",
+		tier = c.tier,
+		needs = { `build:{c.name}` },
+		binary = `{dir}/tmath_tests`,
+		env = { UBSAN_OPTIONS = "halt_on_error=1:print_stacktrace=1" },
+		resources = { tags = { c.name } },
+		stepTimeout = 600,
+		budget = if (c.sanitizer != nil) 60 else 15,
+		paths = kPaths,
+	})
+}
