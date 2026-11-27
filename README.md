@@ -79,5 +79,9 @@ there by CI; when enough has gathered, `dev` becomes the next release. See
 
 ## License
 
-The tmath License: MIT-style, with one condition: a product that includes
-tmath credits it in its credits or about box. See [LICENSE](LICENSE).
+tmath is released under the Odd Fish Society License ([`LICENSE`](LICENSE)), which is
+MIT with one added condition. A product that includes tmath credits it in its credits,
+about box or documentation, as "Uses tmath - Copyright (c) 2026 Odd Fish Society /
+Felipe Lara". A product that uses several Odd Fish Society libraries can credit them
+together, on one line or several, such as "Uses kiln, cluau and wisp - Copyright (c)
+2026 Odd Fish Society / Felipe Lara". No logo or splash screen is required.
